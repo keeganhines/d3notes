@@ -26,10 +26,8 @@
            .attr('height',h)
            
            
-        var dataset= [];
-        for (var i =0; i<35; i++){
-            dataset.push( (Math.random() * 30) )
-        };
+        var dataset= [10,15,8,21,29,12,26,16,12];
+
        
         svg.selectAll('rect')
            .data(dataset)
@@ -48,6 +46,24 @@
                 return  d * 5
                 })
            .attr('fill','#3690C0')
+           
+           
+        svg.selectAll('text')
+           .data(dataset)
+           .enter()
+           .append('text')
+           .text(function(d){
+                return d;
+                })
+           .attr('x', function(d,i){
+                return i*(w/dataset.length) + (w/dataset.length -barPadding)/3;
+            })
+           .attr('y',function(d){
+                return h-(d*5) + 20;
+                 })
+           .attr('font-family','sans-serif')
+           .attr('font-size','14px')
+           .attr('fill','white')
             
         </script>
     </body>
