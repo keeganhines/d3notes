@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <title>D3</title>
+    <script type="text/javascript" src="../d3/d3.js"></script>
+        <style type='text/css'>
+            div.bar {
+            display: inline-block;
+            width: 20px;
+            height: 75px;
+            background-color:#3690C0;
+            margin-right: 2px;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <script type="text/javascript">
+        var w = 500;
+        var h = 250;
+        var barPadding=1;
+        var svg = d3.select('body').append('svg')
+        
+        svg.attr('width',w)
+           .attr('height',h)
+           
+           
+        var dataset= [];
+        for (var i =0; i<35; i++){
+            dataset.push( (Math.random() * 30) )
+        };
+       
+        svg.selectAll('rect')
+           .data(dataset)
+           .enter()
+           .append('rect')
+           .attr('x',function(d,i){
+                return i * (w/dataset.length)      
+                 })
+           .attr('y',0)
+           .attr('width', function(d,i){
+                return w/dataset.length - barPadding
+                })
+           .attr('height',function(d){return  d*5})
+            
+        </script>
+    </body>
+</html>
