@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Updating Bar Chart</title>
+		<script type="text/javascript" src="../d3/d3.js"></script>
+		<style type="text/css">
+			.message{
+				font-family:'sans-serif';
+				font-size:24px;
+
+			}	
+		</style>
+	</head>
+	<body>
+		<p class='message'> Click here to add data </p>
+		<p class='message' id='remove'> Click here to remove data</p>
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 800;
+			var h = 350;
+			var barPadding = 1;
+			var dur=1000;
+
+			var dataset = [ 
+							11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
+			
+
+			// create scales
+			var xScale = d3.scale.ordinal()
+								 .domain(d3.range(dataset.length))
+								 .rangeRoundBands([0,w],0.05);
+
+			var yScale = d3.scale.linear()
+								 .domain([0,d3.max(dataset)])
+								 .range([0,h]);
+
+
+
+
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			// append bars
+			svg.selectAll("rect")
+			   .data(dataset)
+			   .enter()
+			   .append("rect")
+			   .attr("x", function(d, i) {
+			   		return xScale(i);
+			   })
+			   .attr("y", function(d) {
+			   		return h - yScale(d);
+			   })
+			   .attr("width", xScale.rangeBand())
+			   .attr("height", function(d) {
+			   		return yScale(d);
+			   })
+			   .attr("fill", function(d) {
+					return "rgb(0, 0, " + (d * 10) + ")";
+			   });
+
+			svg.selectAll("text")
+			   .data(dataset)
+			   .enter()
+			   .append("text")
+			   .text(function(d) {
+			   		return d;
+			   })
+			   .attr("text-anchor", "middle")
+			   .attr("x", function(d, i) {
+			   		return xScale(i) + xScale.rangeBand()/2;
+			   })
+			   .attr("y", function(d) {
+			   		return h- yScale(d) + 20;
+			   })
+			   .attr("font-family", "sans-serif")
+			   .attr("font-size", "16px")
+			   .attr("fill", "white");
+
+
+			d3.select('p')
+			  .on('click',function(){
+			  		
+			  		var maxVal=35
+			  		dataset.push(Math.floor(Math.random()*maxVal +1))
+			  		
+
+			  		xScale.domain(d3.range(dataset.length));
+			  	
+			  		yScale.domain([0,d3.max(dataset)]);
+
+			  		// new bars
+			  		var bars= svg.selectAll('rect').data(dataset);
+			  		
+			  		bars.enter()
+			  			.append('rect')
+			  			.attr('x',w)
+			  			.attr('y',function(d){return h - yScale(d)})
+			  			.attr("width", xScale.rangeBand() )
+			  			.attr('height', function(d){return yScale(d)})
+			  			.attr("fill", function(d) {				
+							return "rgb(0, 0, " + (d * 10) + ")";
+						})
+
+			  		
+			  		bars.transition()
+			  			.duration(500)
+			  			.attr('x',function(d,i){
+			  				return xScale(i);
+			  			})
+			  			.attr('y', function(d){
+			  				return h-yScale(d);
+			  			})
+			  			.attr('width',xScale.rangeBand())
+			  			.attr('height',function(d){
+			  				return yScale(d);
+			  			})
+			  	
+
+			  		// new text
+			  		var txt= svg.selectAll('text').data(dataset);
+			  		
+			  		txt.enter()
+			  			.append('text')
+			  			.text(function(d){return d})
+			  			.attr("text-anchor", "middle")
+			  			.attr('x',w)
+			  			.attr('y',function(d){return h - yScale(d) + 20})
+			  			.attr("font-family", "sans-serif")
+			   			.attr("font-size", "16px")
+			   			.attr("fill", "white");
+
+			  		txt.transition()
+			  			.duration(500)
+			  			.attr('x',function(d,i){return xScale(i)+xScale.rangeBand()/2})
+			  			.attr('y', function(d){return h-yScale(d) + 20 })
+				})
+						  	
+			d3.select('#remove')	
+			  	  .on('click', function(){
+			  	  		dataset.pop();
+
+			  	  	xScale.domain(d3.range(dataset.length));
+			  	
+			  		yScale.domain([0,d3.max(dataset)]);
+
+
+			  	  		var bars= svg.selectAll('rect').data(dataset);
+			  	  		bars.exit()
+			  	  			.transition()
+			  	  			.duration(500)
+			  	  			.attr('x',w)
+			  	  			.remove(); 
+
+			  	  		bars.transition()
+				  			.duration(500)
+				  			.attr('x',function(d,i){
+				  				return xScale(i);
+				  			})
+				  			.attr('y', function(d){
+				  				return h-yScale(d);
+				  			})
+				  			.attr('width',xScale.rangeBand())
+				  			.attr('height',function(d){
+				  				return yScale(d);
+				  			})
+				  	  		
+
+				  		var txt= svg.selectAll('text').data(dataset);
+			  			txt.exit()
+			  			   .transition()
+			  			   .duration(500)
+			  			   .attr('x',w)
+			  			   .remove();
+
+			  			txt.transition()
+				  			.duration(500)
+				  			.attr('x',function(d,i){return xScale(i)+xScale.rangeBand()/2})
+				  			.attr('y', function(d){return h-yScale(d) + 20 })
+
+			  	  })
+
+		</script>
+
+
+	</body>
+</html>
